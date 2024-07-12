@@ -1,4 +1,12 @@
 from django.contrib import admin
-from .models import Persona
+from . import models
 
-admin.site.register(Persona)
+class ComentarioAdmin(admin.ModelAdmin):
+    list_display = ("id", "ticket", "autor", "contenido", "fecha_creacion")
+    list_filter = ("ticket", "autor")
+
+admin.site.register(models.Etiqueta)
+admin.site.register(models.Direccion)
+admin.site.register(models.Personal)
+admin.site.register(models.Ticket)
+admin.site.register(models.Comentario, ComentarioAdmin)
