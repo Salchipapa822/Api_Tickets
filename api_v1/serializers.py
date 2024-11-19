@@ -29,7 +29,7 @@ class PersonalSerializer(serializers.ModelSerializer):
 
 
 class ComentarioSerializer(serializers.ModelSerializer):
-    #autor = serializers.StringRelatedField(many=False)
+    autor = serializers.StringRelatedField(many=False)
 
     class Meta:
         model = Comentario
@@ -44,11 +44,11 @@ class TicketComentarioSerializer(ComentarioSerializer):
 
 
 class TicketSerializer(serializers.ModelSerializer):
-    #presentado_por = serializers.StringRelatedField(many=False)
-    #resuelto_por = serializers.StringRelatedField(many=False)
-    #presentado_en = serializers.StringRelatedField(many=False)
-    #etiqueta = serializers.StringRelatedField(many=False)
-    #comentarios_count = serializers.SerializerMethodField()
+    presentado_por = serializers.StringRelatedField(many=False)
+    resuelto_por = serializers.StringRelatedField(many=False)
+    presentado_en = serializers.StringRelatedField(many=False)
+    etiqueta = serializers.StringRelatedField(many=False)
+    comentarios_count = serializers.SerializerMethodField()
 
     def get_comentarios_count(self, ticket):
         return ticket.comentarios.count()
