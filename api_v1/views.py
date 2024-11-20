@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import logout 
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
@@ -10,6 +10,7 @@ from django.views.generic.edit import FormView
 from rest_framework import permissions, status, viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -76,32 +77,22 @@ class ComentariosViewSet(viewsets.ModelViewSet):
     authentication_class = (TokenAuthentication,)
 
 
-class Login(FormView):
-    template_name = "login.html"
-    form_class = AuthenticationForm
-    success_url = reverse_lazy('api:v1')
-
-    @method_decorator(csrf_protect)
-    @method_decorator(never_cache)
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            return HttpResponseRedirect(self.get_success_url())
-        else:
-            return super(Login, self).dispatch(request, *args, *kwargs)
-
-    def form_valid(self, form):
-        user = authenticate(
-            username=form.cleaned_data['username'],
-            password=form.cleaned_data['password']
-        )
-        token, _ = Token.objects.get_or_create(user=user)
-        if token:
-            login(self.request, form.get_user())
-            return super(Login, self).form_valid(form)
-
+class CustomAuthToken(ObtainAuthToken):
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key})
 
 class Logout(APIView):
     def get(self, request, format=None):
         request.user.auth_token.delete()
         logout(request)
         return Response(status=status.HTTP_200_OK)
+
+
+
+
+
+

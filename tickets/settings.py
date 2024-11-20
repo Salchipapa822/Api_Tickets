@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-3#i3ic(_p1a_d2box2+fn@1rj2sa@es6ks6c)o(%t4@udk9oye
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'base',
     'api_v1',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -51,9 +52,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'tickets.urls'
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",  # Por ejemplo, si usas React en desarrollo
+]
 
 TEMPLATES = [
     {
@@ -83,6 +89,7 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
 
 
 # Password validation
